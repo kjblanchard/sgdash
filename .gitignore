@@ -1,0 +1,5 @@
+.vscode/
+gameengine.*
+gameengine
+imgui.ini
+build/
