@@ -3,13 +3,9 @@
 #include <entt/entt.hpp>
 #include <events/EventBus.h>
 #include <core/asset_store.hpp>
-
-// #include "../AssetStore/AssetStore.h"
-// #include "../EventBus/EventBus.h"
-
-//Library that needs to be implemented
 #include <SDL2/SDL.h>
 #include <sol/sol.hpp>
+
 const int FPS = 60;
 const int MILLISECS_PER_FRAME = 1000 / FPS;
 

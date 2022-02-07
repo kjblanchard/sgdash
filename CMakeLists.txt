@@ -32,7 +32,7 @@ foreach(library ${libnames})
                             )
 endforeach()
 
-#cpp17
+#cpp17 with showing compile warnings.
 add_compile_options(-Wall -Wfatal-errors)
 set_property(TARGET main PROPERTY CXX_STANDARD 17)
 

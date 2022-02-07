@@ -1,5 +1,5 @@
 #include <core/logger.hpp>
-#include <core/LevelLoader.h>
+#include <core/levelloader.hpp>
 
 //lib resources.
 #include <core/world.hpp>
@@ -8,7 +8,7 @@
 #include <SDL2/SDL_ttf.h>
 #include <glm/glm.hpp>
 
-#include <systems/DrawSystem.hpp>
+#include <systems/draw_system.hpp>
 #include <systems/sound_system.hpp>
 #include <iostream>
 
@@ -92,14 +92,11 @@ void World::Initialize()
 
     isRunning = true;
     ImGui::CreateContext();
-    // Setup Dear ImGui style
     ImGui::StyleColorsDark();
 
     // Setup Platform/Renderer backends
     ImGui_ImplSDL2_InitForSDLRenderer(window, renderer);
     ImGui_ImplSDLRenderer_Init(renderer);
-    // ImGuiIO &io = ImGui::GetIO();
-    // (void)io;
 }
 
 void World::ProcessInput()
@@ -108,13 +105,13 @@ void World::ProcessInput()
     while (SDL_PollEvent(&sdlEvent))
     {
         ImGui_ImplSDL2_ProcessEvent(&sdlEvent);
+
+        //Handle imgui with the scaled screen.
         ImGuiIO &io = ImGui::GetIO();
         (void)io;
         int mouseX, mouseY;
         const int buttons = SDL_GetMouseState(&mouseX, &mouseY);
         io.MousePos = ImVec2(mouseX / screenScaleRatioWidth, mouseY / screenScaleRatioHeight);
-        // io.MouseDown[0] = buttons & SDL_BUTTON(SDL_BUTTON_LEFT);
-        // io.MouseDown[1] = buttons & SDL_BUTTON(SDL_BUTTON_RIGHT);
 
         // Handle core SDL events (close window, key pressed, etc.)
         switch (sdlEvent.type)

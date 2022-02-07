@@ -1,4 +1,4 @@
-#include <systems/DrawSystem.hpp>
+#include <systems/draw_system.hpp>
 
 void DrawSystem::Update(entt::registry &reg, SDL_Renderer *renderer, std::unique_ptr<AssetStore> &assetStore, SDL_Rect &camera)
 {
