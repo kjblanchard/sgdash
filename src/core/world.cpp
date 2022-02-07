@@ -14,9 +14,9 @@
 
 #include <utilities/lualoader.hpp>
 
-// #include <imgui/imgui.h>
-// #include <imgui/imgui_impl_sdlrenderer.h>
-// #include <imgui/imgui_impl_sdl.h>
+#include <imgui/imgui.h>
+#include <imgui/imgui_impl_sdlrenderer.h>
+#include <imgui/imgui_impl_sdl.h>
 
 int World::windowWidth;
 int World::windowHeight;
@@ -44,7 +44,6 @@ World::~World()
 void World::Initialize()
 {
     if (SDL_Init(SDL_INIT_VIDEO) != 0)
-    // if (SDL_Init(SDL_INIT_EVERYTHING) != 0)
     {
         Logger::Err("Error initializing SDL.");
         return;
@@ -56,8 +55,6 @@ void World::Initialize()
     }
     SDL_DisplayMode displayMode;
     SDL_GetCurrentDisplayMode(0, &displayMode);
-    // windowWidth = 800;
-    // windowHeight = 600;
     sol::state tempLua;
     auto config = utilities::load_lua_table(tempLua, "cfg.lua", "window_config");
     windowWidth = config[windowWidthStr];
@@ -86,13 +83,6 @@ void World::Initialize()
         return;
     }
 
-    // Initialize the ImGui context
-    // ImGui::CreateContext();
-
-    // ImGui_ImplSDL2_InitForSDLRenderer(window);
-    // ImGui_ImplSDLRenderer_Init(renderer);
-    // ImGuiSDL::Initialize(renderer, windowWidth, windowHeight);
-
     // Initialize the camera view with the entire screen area
     camera.x = 0;
     camera.y = 0;
@@ -100,9 +90,16 @@ void World::Initialize()
     camera.h = unscaledHeight;
     SDL_RenderSetLogicalSize(renderer, unscaledWidth, unscaledHeight);
 
-    // SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN);
     isRunning = true;
-    auto entity = reg.create();
+    ImGui::CreateContext();
+    // Setup Dear ImGui style
+    ImGui::StyleColorsDark();
+
+    // Setup Platform/Renderer backends
+    ImGui_ImplSDL2_InitForSDLRenderer(window, renderer);
+    ImGui_ImplSDLRenderer_Init(renderer);
+    // ImGuiIO &io = ImGui::GetIO();
+    // (void)io;
 }
 
 void World::ProcessInput()
@@ -110,12 +107,12 @@ void World::ProcessInput()
     SDL_Event sdlEvent;
     while (SDL_PollEvent(&sdlEvent))
     {
-        // ImGui SDL input
-        // ImGui_ImplSDL2_ProcessEvent(&sdlEvent);
-        // ImGuiIO &io = ImGui::GetIO();
-        // int mouseX, mouseY;
-        // const int buttons = SDL_GetMouseState(&mouseX, &mouseY);
-        // io.MousePos = ImVec2(mouseX / screenScaleRatioWidth, mouseY / screenScaleRatioHeight);
+        ImGui_ImplSDL2_ProcessEvent(&sdlEvent);
+        ImGuiIO &io = ImGui::GetIO();
+        (void)io;
+        int mouseX, mouseY;
+        const int buttons = SDL_GetMouseState(&mouseX, &mouseY);
+        io.MousePos = ImVec2(mouseX / screenScaleRatioWidth, mouseY / screenScaleRatioHeight);
         // io.MouseDown[0] = buttons & SDL_BUTTON(SDL_BUTTON_LEFT);
         // io.MouseDown[1] = buttons & SDL_BUTTON(SDL_BUTTON_RIGHT);
 
@@ -161,25 +158,44 @@ void World::Update()
     double deltaTime = (SDL_GetTicks() - millisecsPreviousFrame) / 1000.0;
     millisecsPreviousFrame = SDL_GetTicks();
     eventBus->Reset();
-    // registry->Update();
     SoundSystem::Update();
-
 }
 
+static int counter = 0;
 void World::Render()
 {
     SDL_SetRenderDrawColor(renderer, 21, 21, 21, 255);
     SDL_RenderClear(renderer);
 
-    // registry->GetSystem<RenderSystem>().Update(renderer, assetStore, camera);
-    // if (isDebug)
-    // {
-    //     registry->GetSystem<RenderColliderSystem>().Update(renderer, camera);
-    //     registry->GetSystem<RenderGuiSystem>().Update(registry);
-
-    // }
-
     DrawSystem::Update(reg, renderer, assetStore, camera);
+    if (isDebug)
+    {
+        ImGui_ImplSDLRenderer_NewFrame();
+        ImGui_ImplSDL2_NewFrame();
+        ImGui::NewFrame();
+
+        ImGui::ShowDemoWindow();
+        {
+            static float f = 0.0f;
+
+            ImGui::Begin("Hello, world!"); // Create a window called "Hello, world!" and append into it.
+
+            ImGui::Text("This is some useful text."); // Display some text (you can use a format strings too)
+
+            ImGui::SliderFloat("float", &f, 0.0f, 1.0f); // Edit 1 float using a slider from 0.0f to 1.0f
+
+            if (ImGui::Button("Button")) // Buttons return true when clicked (most widgets return true when edited/activated)
+                counter++;
+            ImGui::SameLine();
+            ImGui::Text("counter = %d", counter);
+
+            ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+            ImGui::End();
+        }
+
+        ImGui::Render();
+        ImGui_ImplSDLRenderer_RenderDrawData(ImGui::GetDrawData());
+    }
 
     SDL_RenderPresent(renderer);
 }
@@ -197,9 +213,9 @@ void World::Run()
 
 void World::Destroy()
 {
-    // ImGui_ImplSDLRenderer_Shutdown();
-    // ImGui_ImplSDL2_Shutdown();
-    // ImGui::DestroyContext();
+    ImGui_ImplSDLRenderer_Shutdown();
+    ImGui_ImplSDL2_Shutdown();
+    ImGui::DestroyContext();
 
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);

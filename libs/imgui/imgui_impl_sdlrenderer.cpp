@@ -32,11 +32,8 @@
 #endif
 
 // SDL
-#if defined(WIN32) || defined(WIN64) || defined(_WIN32) || defined(_WIN64)
- #include <SDL.h>
-#else
- #include <SDL2/SDL.h>
-#endif
+#include <SDL2/SDL.h>
+// #include <SDL.h>
 #if !SDL_VERSION_ATLEAST(2,0,17)
 #error This backend requires SDL 2.0.17+ because of SDL_RenderGeometry() function
 #endif
@@ -214,7 +211,7 @@ bool ImGui_ImplSDLRenderer_CreateFontsTexture()
     io.Fonts->GetTexDataAsRGBA32(&pixels, &width, &height);   // Load as RGBA 32-bit (75% of the memory is wasted, but default font is so small) because it is more likely to be compatible with user's existing shaders. If your ImTextureId represent a higher-level concept than just a GL texture id, consider calling GetTexDataAsAlpha8() instead to save on GPU memory.
 
     // Upload texture to graphics system
-    bd->FontTexture = SDL_CreateTexture(bd->SDLRenderer, SDL_PIXELFORMAT_RGBA32, SDL_TEXTUREACCESS_STATIC, width, height);
+    bd->FontTexture = SDL_CreateTexture(bd->SDLRenderer, SDL_PIXELFORMAT_ABGR8888, SDL_TEXTUREACCESS_STATIC, width, height);
     if (bd->FontTexture == NULL)
     {
         SDL_Log("error creating texture");

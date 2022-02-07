@@ -13,7 +13,7 @@ include_directories(
 )
 
 #Get all files and headers from the source folder.
-file(GLOB FILES "src/**/*.?pp" "src/*.?pp")
+file(GLOB FILES "src/**/*.?pp" "src/*.?pp" "libs/imgui/*.?pp")
 
 #Use those files to make the main executable.
 add_executable(main ${FILES})
