@@ -1,5 +1,5 @@
-#include <essential/asset_store.hpp>
-#include <essential/logger.hpp>
+#include <core/asset_store.hpp>
+#include <core/logger.hpp>
 #include <SDL2/SDL_image.h>
 
 AssetStore::AssetStore() {

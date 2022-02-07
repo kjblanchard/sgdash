@@ -1,12 +1,11 @@
 #include <fmod/fmod_studio.hpp>
-#include <ecs/ECS.h>
 
-class SoundSystem : public System
+class SoundSystem
 {
 private:
-    FMOD::Studio::System *loaded_system;
+    static FMOD::Studio::System *loaded_system;
 
 public:
-    FMOD::Studio::System *Setup();
-    void Update();
+    static FMOD::Studio::System *Setup();
+    static void Update();
 };

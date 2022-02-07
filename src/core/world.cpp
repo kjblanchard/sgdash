@@ -1,15 +1,14 @@
-#include <ecs/ECS.h>
-#include <essential/logger.hpp>
-#include <essential/LevelLoader.h>
+#include <core/logger.hpp>
+#include <core/LevelLoader.h>
 
 //lib resources.
-#include <essential/world.hpp>
+#include <core/world.hpp>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_ttf.h>
 #include <glm/glm.hpp>
 
-#include <systems/RenderSystem.h>
+#include <systems/DrawSystem.hpp>
 #include <systems/sound_system.hpp>
 #include <iostream>
 
@@ -32,7 +31,6 @@ World::World()
 {
     isRunning = false;
     isDebug = false;
-    registry = std::make_unique<Registry>();
     assetStore = std::make_unique<AssetStore>();
     eventBus = std::make_unique<EventBus>();
     Logger::Log("World constructor called!");
@@ -104,6 +102,7 @@ void World::Initialize()
 
     // SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN);
     isRunning = true;
+    auto entity = reg.create();
 }
 
 void World::ProcessInput()
@@ -145,13 +144,10 @@ void World::Setup()
 {
     lua.open_libraries(sol::lib::base, sol::lib::math, sol::lib::os);
 
-    registry->AddSystem<RenderSystem>();
-    registry->AddSystem<SoundSystem>();
-    registry->GetSystem<SoundSystem>().Setup();
+    SoundSystem::Setup();
 
     auto levelloader = LevelLoader();
-    levelloader.LoadTiledLevel(lua,registry,assetStore,renderer,1);
-
+    levelloader.LoadTiledLevel(lua, reg, assetStore, renderer, 1);
 }
 
 void World::Update()
@@ -165,9 +161,9 @@ void World::Update()
     double deltaTime = (SDL_GetTicks() - millisecsPreviousFrame) / 1000.0;
     millisecsPreviousFrame = SDL_GetTicks();
     eventBus->Reset();
-    registry->Update();
+    // registry->Update();
+    SoundSystem::Update();
 
-    registry->GetSystem<SoundSystem>().Update();
 }
 
 void World::Render()
@@ -175,13 +171,15 @@ void World::Render()
     SDL_SetRenderDrawColor(renderer, 21, 21, 21, 255);
     SDL_RenderClear(renderer);
 
-    registry->GetSystem<RenderSystem>().Update(renderer, assetStore, camera);
+    // registry->GetSystem<RenderSystem>().Update(renderer, assetStore, camera);
     // if (isDebug)
     // {
     //     registry->GetSystem<RenderColliderSystem>().Update(renderer, camera);
     //     registry->GetSystem<RenderGuiSystem>().Update(registry);
 
     // }
+
+    DrawSystem::Update(reg, renderer, assetStore, camera);
 
     SDL_RenderPresent(renderer);
 }

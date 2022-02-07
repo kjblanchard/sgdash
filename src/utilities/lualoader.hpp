@@ -1,7 +1,7 @@
 #pragma once
 #include <iostream>
 #include <sol/sol.hpp>
-#include <essential/logger.hpp>
+#include <core/logger.hpp>
 
 class utilities
 {

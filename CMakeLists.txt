@@ -8,6 +8,8 @@ include_directories(
     "/usr/local/Cellar/sdl2_image/2.0.5/include"
     "/usr/local/Cellar/sdl2_ttf/2.0.18/include"
     "/usr/local/Cellar/lua/5.4.4/include/lua"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src"
+    "${CMAKE_CURRENT_SOURCE_DIR}/libs/"
 )
 
 #Get all files and headers from the source folder.
@@ -29,12 +31,6 @@ foreach(library ${libnames})
                             /usr/local/lib/${library}.dylib
                             )
 endforeach()
-
-target_include_directories(main
-        PUBLIC
-        "${CMAKE_CURRENT_SOURCE_DIR}/src"
-        "${CMAKE_CURRENT_SOURCE_DIR}/libs/"
-        )
 
 #cpp17
 add_compile_options(-Wall -Wfatal-errors)

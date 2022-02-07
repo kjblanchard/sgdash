@@ -1,9 +1,9 @@
 #pragma once
 
+#include <entt/entt.hpp>
 #include <events/EventBus.h>
-#include <essential/asset_store.hpp>
+#include <core/asset_store.hpp>
 
-class Registry;
 // #include "../AssetStore/AssetStore.h"
 // #include "../EventBus/EventBus.h"
 
@@ -24,7 +24,7 @@ private:
     SDL_Rect camera;
 
     sol::state lua;
-    std::unique_ptr<Registry> registry;
+    entt::registry reg;
     std::unique_ptr<AssetStore> assetStore;
     std::unique_ptr<EventBus> eventBus;
 

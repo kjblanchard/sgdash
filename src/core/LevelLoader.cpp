@@ -1,5 +1,5 @@
-#include <essential/LevelLoader.h>
-#include <essential/world.hpp>
+#include <core/LevelLoader.h>
+#include <core/world.hpp>
 #include <components/TransformComponent.h>
 #include <components/SpriteComponent.h>
 #include <fstream>
@@ -13,7 +13,7 @@ LevelLoader::~LevelLoader()
 {
 }
 
-void LevelLoader::LoadTiledLevel(sol::state &lua, const std::unique_ptr<Registry> &registry, const std::unique_ptr<AssetStore> &assetStore, SDL_Renderer *renderer, int level)
+void LevelLoader::LoadTiledLevel(sol::state &lua, entt::registry &registry, const std::unique_ptr<AssetStore> &assetStore, SDL_Renderer *renderer, int level)
 {
     //Temporary level to load.
     auto filename = "./assets/tiled/debug.lua";
@@ -80,17 +80,16 @@ void LevelLoader::LoadTiledLevel(sol::state &lua, const std::unique_ptr<Registry
             int numberInTileset = tileNumber - 1;
             int srcY = (numberInTileset / tileMapNumRows) * tileWidth;
             int srcX = (numberInTileset % tileMapNumRows) * tileHeight;
-            for (size_t i = 0; i < 100; i++)
-            {
-                Entity tile = registry->CreateEntity();
-                tile.AddComponent<TransformComponent>(glm::vec2(x, y), glm::vec2(1.0, 1.0), 0.0);
-                tile.AddComponent<SpriteComponent>(tilesetName, tileHeight, tileWidth, 0, false, srcX, srcY);
-            }
+            const auto tile = registry.create();
+            registry.emplace<TransformComponent>(tile, glm::vec2(x, y), glm::vec2(1.0, 1.0), 0.0);
+            registry.emplace<SpriteComponent>(tile, tilesetName, tileWidth, tileHeight, iLayer, false, srcX, srcY);
 
             jTileNum++;
         }
         iLayer++;
     }
+    registry.sort<SpriteComponent>([](const auto &lhs, const auto &rhs)
+                                   { return lhs.zIndex < rhs.zIndex; });
 }
 
 // void LevelLoader::LoadLevel(sol::state &lua, const std::unique_ptr<Registry> &registry, const std::unique_ptr<AssetStore> &assetStore, SDL_Renderer *renderer, int levelNumber)
