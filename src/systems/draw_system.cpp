@@ -21,5 +21,4 @@ void DrawSystem::Update(entt::registry &reg, SDL_Renderer *renderer, std::unique
                           NULL,
                           sprite.flip);
                   });
-
 }

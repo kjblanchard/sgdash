@@ -8,8 +8,12 @@
 #include <SDL2/SDL_ttf.h>
 #include <glm/glm.hpp>
 
+//Systems
 #include <systems/draw_system.hpp>
 #include <systems/sound_system.hpp>
+#include <systems/movement_system.hpp>
+#include <systems/gravity_system.hpp>
+
 #include <iostream>
 
 #include <utilities/lualoader.hpp>
@@ -156,6 +160,9 @@ void World::Update()
     millisecsPreviousFrame = SDL_GetTicks();
     eventBus->Reset();
     SoundSystem::Update();
+    GravitySystem::Update(reg, deltaTime);
+    MovementSystem::Update(reg,deltaTime);
+
 }
 
 static int counter = 0;

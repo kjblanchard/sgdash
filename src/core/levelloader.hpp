@@ -1,4 +1,5 @@
 #pragma once
+
 #include <core/asset_store.hpp>
 #include <SDL2/SDL.h>
 #include <sol/sol.hpp>

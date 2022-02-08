@@ -1,8 +1,9 @@
 #include <core/levelloader.hpp>
 #include <core/world.hpp>
 #include <utilities/lualoader.hpp>
-#include <components/TransformComponent.h>
-#include <components/SpriteComponent.h>
+#include <components/transform_component.hpp>
+#include <components/sprite_component.hpp>
+#include <components/rigid_body_component.hpp>
 #include <fstream>
 #include <string>
 
@@ -92,6 +93,11 @@ void LevelLoader::LoadTiledLevel(sol::state &lua, entt::registry &registry, cons
         }
         iLayer++;
     }
+    const auto player = registry.create();
+    registry.emplace<TransformComponent>(player, glm::vec2(40, 40), glm::vec2(1.0, 1.0), 0);
+    registry.emplace<SpriteComponent>(player, tilesetName, tileWidth, tileHeight, 5, false, 0, 64);
+    registry.emplace<RigidBodyComponent>(player);
+
     //Sort the registry so that it is ordered by z for the sprite components.  This should be done whenever something is added.
     registry.sort<SpriteComponent>([](const auto &lhs, const auto &rhs)
                                    { return lhs.zIndex < rhs.zIndex; });

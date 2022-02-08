@@ -1,8 +1,8 @@
 #pragma once
 
 #include <algorithm>
-#include <components/TransformComponent.h>
-#include <components/SpriteComponent.h>
+#include <components/transform_component.hpp>
+#include <components/sprite_component.hpp>
 #include <core/asset_store.hpp>
 #include <SDL2/SDL.h>
 #include <entt/entt.hpp>
