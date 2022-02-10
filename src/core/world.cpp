@@ -97,6 +97,7 @@ void World::Initialize()
     isRunning = true;
     ImGui::CreateContext();
     ImGui::StyleColorsDark();
+    SDL_RenderSetVSync(renderer,1);
 
     // Setup Platform/Renderer backends
     ImGui_ImplSDL2_InitForSDLRenderer(window, renderer);

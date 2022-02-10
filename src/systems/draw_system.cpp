@@ -1,9 +1,11 @@
+#include <iostream>
 #include <systems/draw_system.hpp>
+#include <components/rigid_body_component.hpp>
 
 void DrawSystem::Update(entt::registry &reg, SDL_Renderer *renderer, std::unique_ptr<AssetStore> &assetStore, SDL_Rect &camera)
 {
-    auto entities = reg.group<SpriteComponent, TransformComponent>();
-    entities.each([&assetStore, &renderer, &camera](auto &sprite, auto &transform)
+    auto entities = reg.view<SpriteComponent, TransformComponent>();
+    entities.each([&assetStore, &renderer, &camera, &reg](auto entity, auto &sprite, auto &transform)
                   {
                       SDL_Rect srcRect = sprite.srcRect;
                       SDL_Rect dstRect = {
