@@ -45,3 +45,5 @@ add_custom_command(
         COMMAND ${CMAKE_COMMAND} -E copy_directory
                 ${CMAKE_SOURCE_DIR}/assets
                 ${CMAKE_CURRENT_BINARY_DIR}/assets)
+
+set(CMAKE_BUILD_TYPE Debug)
