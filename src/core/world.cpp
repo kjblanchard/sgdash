@@ -143,7 +143,7 @@ void World::Setup()
 {
     lua.open_libraries(sol::lib::base, sol::lib::math, sol::lib::os);
 
-    SoundSystem::Setup();
+    SoundSystem::Setup(lua);
 
     auto levelloader = LevelLoader();
     levelloader.LoadTiledLevel(lua, reg, assetStore, renderer, 1);
@@ -154,7 +154,7 @@ void World::Update()
     int timeToWait = MILLISECS_PER_FRAME - (SDL_GetTicks() - millisecsPreviousFrame);
     if (timeToWait > 0 && timeToWait <= MILLISECS_PER_FRAME)
     {
-        SDL_Delay(timeToWait);
+        SDL_Delay(5);
     }
     // The difference in ticks since the last frame, converted to seconds
     double deltaTime = (SDL_GetTicks() - millisecsPreviousFrame) / 1000.0;
