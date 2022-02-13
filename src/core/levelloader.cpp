@@ -90,7 +90,6 @@ void LevelLoader::LoadTiledLevel(sol::state &lua, entt::registry &registry, cons
             const auto tile = registry.create();
             if (visible)
             {
-                registry.emplace<TransformComponent>(tile, glm::vec2(x, y), glm::vec2(1.0, 1.0), 0.0);
                 registry.emplace<SpriteComponent>(tile, tilesetName, tileWidth, tileHeight, iLayer, false, srcX, srcY);
             }
             if (layerName == "Obstacles")
@@ -102,6 +101,7 @@ void LevelLoader::LoadTiledLevel(sol::state &lua, entt::registry &registry, cons
                 rect.h = tileHeight;
                 registry.emplace<BoxColliderComponent>(tile, rect);
             }
+            registry.emplace<TransformComponent>(tile, glm::vec2(x, y), glm::vec2(1.0, 1.0), 0.0);
 
             jTileNum++;
         }
@@ -112,6 +112,12 @@ void LevelLoader::LoadTiledLevel(sol::state &lua, entt::registry &registry, cons
     registry.emplace<TransformComponent>(player, glm::vec2(40, 40), glm::vec2(1.0, 1.0), 0);
     registry.emplace<SpriteComponent>(player, tilesetName, tileWidth, tileHeight, 5, false, 0, 64);
     registry.emplace<RigidBodyComponent>(player);
+    SDL_Rect player_rect;
+    player_rect.h = 16;
+    player_rect.w = 16;
+    player_rect.x = 16;
+    player_rect.y = 16;
+    registry.emplace<BoxColliderComponent>(player, player_rect);
 
     //Sort the registry so that it is ordered by z for the sprite components.  This should be done whenever something is added.
     registry.sort<SpriteComponent>([](const auto &lhs, const auto &rhs)

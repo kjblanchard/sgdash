@@ -100,7 +100,7 @@ return {
       height = 15,
       id = 2,
       name = "Obstacles",
-      visible = true,
+      visible = false,
       opacity = 1,
       offsetx = 0,
       offsety = 0,

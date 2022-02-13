@@ -13,6 +13,7 @@
 #include <systems/sound_system.hpp>
 #include <systems/movement_system.hpp>
 #include <systems/gravity_system.hpp>
+#include <systems/collision_system.hpp>
 
 #include <iostream>
 
@@ -163,6 +164,8 @@ void World::Update()
     SoundSystem::Update();
     GravitySystem::Update(reg, deltaTime);
     MovementSystem::Update(reg,deltaTime);
+    CollisionSystem::Update(reg,deltaTime);
+
 
 }
 
