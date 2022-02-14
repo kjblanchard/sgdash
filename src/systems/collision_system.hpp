@@ -1,12 +1,16 @@
 #pragma once
 
 #include <SDL2/SDL.h>
-#include <entt/entt.hpp>
+
+class TransformComponent;
+class BoxColliderComponent;
 
 class CollisionSystem
 {
 public:
     static void Update(entt::registry &reg, const double &delta_time);
+    static bool check_collision(entt::registry &reg, entt::entity &ent, BoxColliderComponent& box_collider, TransformComponent& transform);
+
     static inline bool aabb_collision_check(SDL_Rect& lhs, SDL_Rect& rhs){
         return SDL_HasIntersection(&lhs,&rhs);
     }

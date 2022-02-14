@@ -164,7 +164,7 @@ void World::Update()
     SoundSystem::Update();
     GravitySystem::Update(reg, deltaTime);
     MovementSystem::Update(reg,deltaTime);
-    CollisionSystem::Update(reg,deltaTime);
+    // CollisionSystem::Update(reg,deltaTime);
 
 
 }
