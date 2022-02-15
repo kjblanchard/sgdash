@@ -145,6 +145,7 @@ void World::Setup()
     lua.open_libraries(sol::lib::base, sol::lib::math, sol::lib::os);
 
     SoundSystem::Setup(lua);
+    GravitySystem::Setup(lua);
 
     auto levelloader = LevelLoader();
     levelloader.LoadTiledLevel(lua, reg, assetStore, renderer, 1);
@@ -162,8 +163,8 @@ void World::Update()
     millisecsPreviousFrame = SDL_GetTicks();
     eventBus->Reset();
     SoundSystem::Update();
-    GravitySystem::Update(reg, deltaTime);
     MovementSystem::Update(reg,deltaTime);
+    GravitySystem::Update(reg, deltaTime);
     // CollisionSystem::Update(reg,deltaTime);
 
 

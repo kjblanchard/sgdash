@@ -4,10 +4,10 @@
 struct RigidBodyComponent
 {
     RigidBodyComponent()
-        : velocity(glm::vec2(200,0))
+        : velocity(glm::vec2(100,0))
     {
     }
     ~RigidBodyComponent(){};
     glm::vec2 velocity;
-    static const int max_y_speed = 200;
+    static const int max_y_speed = 150;
 };
