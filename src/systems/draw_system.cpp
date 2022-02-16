@@ -24,6 +24,8 @@ void DrawSystem::Update(entt::registry &reg, SDL_Renderer *renderer, std::unique
                           NULL,
                           sprite.flip);
                   });
+
+    //TODO read this from lua
     bool debug = true;
     if (debug)
     {
@@ -31,8 +33,8 @@ void DrawSystem::Update(entt::registry &reg, SDL_Renderer *renderer, std::unique
         debug_entities.each([&renderer, &camera, &reg](auto entity, auto &box, auto &transform)
                             {
                                 SDL_Rect lhs;
-                                lhs.x = static_cast<int>(transform.position.x);
-                                lhs.y = static_cast<int>(transform.position.y);
+                                lhs.x = static_cast<int>(transform.position.x + box.offset.x);
+                                lhs.y = static_cast<int>(transform.position.y + box.offset.y);
                                 lhs.w = static_cast<int>(box.bounding_box.w);
                                 lhs.h = static_cast<int>(box.bounding_box.h);
                                 SDL_SetRenderDrawColor(renderer, 255,0,0,255);

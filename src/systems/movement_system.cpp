@@ -12,12 +12,8 @@ void MovementSystem::Update(entt::registry &reg, const double &delta_time)
 
     view.each([&delta_time, &view, &reg](auto entity, auto &rigid_body, auto &transform, auto &box)
               {
-                  std::cout << rigid_body.velocity.y << "This is the y velocity " << std::endl;
-                  std::cout << rigid_body.velocity.x << "This is the x velocity " << std::endl;
-
                   double x_step = rigid_body.velocity.x * delta_time;
                   double y_step = rigid_body.velocity.y * delta_time;
-
                   //Handle the game loading for testing so that you don't move after a load.
                   if (x_step > 10)
                       x_step = 0;
@@ -27,15 +23,13 @@ void MovementSystem::Update(entt::registry &reg, const double &delta_time)
                   bool x_collision = false;
                   bool y_collision = false;
 
-                  //handle y
+                  //handle y movement
                   while (!y_collision && y_step > 1)
                   {
                       //Add to y to test if the next movement will collide
                       ++transform.position.y;
                       if (CollisionSystem::check_collision(reg, entity, box, transform))
                       {
-
-                          Logger::Err("There would be a Collision in Y");
                           //hit the ground
                           rigid_body.velocity.y = 0;
                           y_collision = true;
@@ -46,23 +40,22 @@ void MovementSystem::Update(entt::registry &reg, const double &delta_time)
                       //Else subtract from y step
                       --y_step;
                   }
-
-                  //   if (!x_collision)
-                  //       transform.position.x += x_step;
-                  //   if (!y_collision)
-                  //       transform.position.y += y_step;
-                //   while (!y_collision && y_step < -1)
-                //   {
-                //       if (CollisionSystem::check_collision(reg, entity, box, transform))
-                //       {
-                //           Logger::Err("Collision");
-                //           rigid_body.velocity.y = 0;
-                //           y_collision = true;
-                //           break;
-                //       }
-                //       --transform.position.y;
-                //       ++y_step;
-                //   }
+                  while (!y_collision && y_step < -1)
+                  {
+                      //Subtract to y to test if the next movement will collide
+                      --transform.position.y;
+                      if (CollisionSystem::check_collision(reg, entity, box, transform))
+                      {
+                          //hit the ground, so reset velocity
+                          rigid_body.velocity.y = 0;
+                          y_collision = true;
+                          //Move transform back as there was a colission
+                          ++transform.position.y;
+                          break;
+                      }
+                      //Else subtract from y step
+                      ++y_step;
+                  }
 
                   //handle X
                   while (!x_collision && x_step > 1)
@@ -83,27 +76,23 @@ void MovementSystem::Update(entt::registry &reg, const double &delta_time)
                       //Else subtract from y step
                       --x_step;
                   }
-                    // while (!x_collision && x_step > 1)
-                    // {
-                    //     // if (CollisionSystem::check_collision(reg, entity, box, transform))
-                    //     // {
-                    //     //     x_collision = true;
-                    //     //     Logger::Err("Collision");
-                    //     //     break;
-                    //     // }
-                    //     ++transform.position.x;
-                    //     --x_step;
-                    // }
-                    // while (!x_collision && x_step < -1)
-                    // {
-                    //     // if (CollisionSystem::check_collision(reg, entity, box, transform))
-                    //     // {
-                    //     //     x_collision = true;
-                    //     //     Logger::Err("Collision");
-                    //     //     break;
-                    //     // }
-                    //     // --transform.position.x;
-                    //     // ++x_step;
-                    // }
+                  while (!x_collision && x_step < -1)
+                  {
+                      //Add to y to test if the next movement will collide
+                      --transform.position.x;
+                      if (CollisionSystem::check_collision(reg, entity, box, transform))
+                      {
+
+                          Logger::Err("There would be a Collision in X");
+                          //hit the ground
+                          rigid_body.velocity.x = 0;
+                          x_collision = true;
+                          //Move transform back as there was a colission
+                          ++transform.position.x;
+                          break;
+                      }
+                      //Else subtract from y step
+                      ++x_step;
+                  }
               });
 }

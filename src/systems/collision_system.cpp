@@ -9,8 +9,8 @@ bool CollisionSystem::check_collision(entt::registry &reg, entt::entity &ent, Bo
 {
     auto view = reg.view<BoxColliderComponent, TransformComponent>();
     SDL_Rect lhs;
-    lhs.x = transform.position.x;
-    lhs.y = transform.position.y;
+    lhs.x = transform.position.x + box_collider.offset.x;
+    lhs.y = transform.position.y + box_collider.offset.y;
     lhs.w = box_collider.bounding_box.w;
     lhs.h = box_collider.bounding_box.h;
 
