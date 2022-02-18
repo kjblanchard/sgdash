@@ -1,7 +1,9 @@
 #pragma once
-#include <entt/entt.hpp>
-#include <sol/sol.hpp>
 
+namespace sol
+{
+    class state;
+}
 class GravitySystem
 {
 public:

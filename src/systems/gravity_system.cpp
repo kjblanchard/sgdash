@@ -1,4 +1,6 @@
 #include <iostream>
+#include <sol/sol.hpp>
+#include <entt/entt.hpp>
 #include <systems/gravity_system.hpp>
 #include <components/rigid_body_component.hpp>
 #include <components/transform_component.hpp>
@@ -21,10 +23,9 @@ void GravitySystem::Setup(sol::state &lua)
 void GravitySystem::Update(entt::registry &reg, double &delta_time)
 {
     auto view = reg.view<RigidBodyComponent>();
-
     double gravity_step = gravity * delta_time;
 
-    //Handle the game loading when the step is huge from loading for now
+    //TODOHandle the game loading when the step is huge from loading for now
     if (gravity_step > 30)
         gravity_step = 0;
 
@@ -36,6 +37,5 @@ void GravitySystem::Update(entt::registry &reg, double &delta_time)
                   std::cout << "Friction step is " << friction_step << std::endl;
                   std::cout << "Gravity Step is step is " << gravity_step << std::endl;
                   rigid_body.velocity.y = (rigid_body.velocity.y + gravity_step > RigidBodyComponent::max_y_speed) ? RigidBodyComponent::max_y_speed : gravity_step + rigid_body.velocity.y;
-                //   rigid_body.velocity.x -= friction_step;
               });
 }
