@@ -1,27 +1,24 @@
-#include <core/logger.hpp>
-#include <core/levelloader.hpp>
+#include <iostream>
+#include <stdexcept>
 
-//lib resources.
 #include <core/world.hpp>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_ttf.h>
 #include <glm/glm.hpp>
+#include <imgui/imgui.h>
+#include <imgui/imgui_impl_sdlrenderer.h>
+#include <imgui/imgui_impl_sdl.h>
 
-//Systems
 #include <systems/draw_system.hpp>
 #include <systems/sound_system.hpp>
 #include <systems/movement_system.hpp>
 #include <systems/gravity_system.hpp>
 #include <systems/collision_system.hpp>
 
-#include <iostream>
-
+#include <core/logger.hpp>
+#include <core/levelloader.hpp>
 #include <utilities/lualoader.hpp>
-
-#include <imgui/imgui.h>
-#include <imgui/imgui_impl_sdlrenderer.h>
-#include <imgui/imgui_impl_sdl.h>
 
 int World::windowWidth;
 int World::windowHeight;
@@ -31,43 +28,37 @@ int World::unscaledHeight;
 int World::unscaledWidth;
 int World::screenScaleRatioHeight;
 int World::screenScaleRatioWidth;
+bool World::isDebug = false;
 
-World::World()
+World::World() : isRunning{false}, assetStore{std::make_unique<AssetStore>()}, eventBus{std::make_unique<EventBus>()}
 {
-    isRunning = false;
-    isDebug = false;
-    assetStore = std::make_unique<AssetStore>();
-    eventBus = std::make_unique<EventBus>();
-    Logger::Log("World constructor called!");
 }
 
 World::~World()
 {
-    Logger::Log("World destructor called!");
 }
 
 void World::Initialize()
 {
     if (SDL_Init(SDL_INIT_VIDEO) != 0)
-    {
-        Logger::Err("Error initializing SDL.");
-        return;
-    }
+        throw std::runtime_error(SDL_GetError());
     if (TTF_Init() != 0)
-    {
-        Logger::Err("Error initializing SDL TTF.");
-        return;
-    }
+        throw std::runtime_error(TTF_GetError());
+
     SDL_DisplayMode displayMode;
     SDL_GetCurrentDisplayMode(0, &displayMode);
     sol::state tempLua;
-    auto config = utilities::load_lua_table(tempLua, "cfg.lua", "window_config");
-    windowWidth = config[windowWidthStr];
-    windowHeight = config[windowHeightStr];
-    unscaledWidth = config[unscaledWidthStr];
-    unscaledHeight = config[unscaledHeightStr];
+
+    auto window_config = utilities::load_lua_table(tempLua, "cfg.lua", "window_config");
+    windowWidth = window_config[windowWidthStr];
+    windowHeight = window_config[windowHeightStr];
+    unscaledWidth = window_config[unscaledWidthStr];
+    unscaledHeight = window_config[unscaledHeightStr];
     screenScaleRatioWidth = windowWidth / unscaledWidth;
     screenScaleRatioHeight = windowWidth / unscaledWidth;
+
+    auto debug_config = utilities::load_lua_table(tempLua, "cfg.lua", "debug_config");
+    World::isDebug = debug_config["all"];
 
     window = SDL_CreateWindow(
         NULL,
@@ -77,16 +68,10 @@ void World::Initialize()
         windowHeight,
         SDL_WINDOW_BORDERLESS);
     if (!window)
-    {
-        Logger::Err("Error creating SDL window.");
-        return;
-    }
+        throw std::runtime_error(SDL_GetError());
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
     if (!renderer)
-    {
-        Logger::Err("Error creating SDL renderer.");
-        return;
-    }
+        throw std::runtime_error(SDL_GetError());
 
     // Initialize the camera view with the entire screen area
     camera.x = 0;
@@ -95,14 +80,15 @@ void World::Initialize()
     camera.h = unscaledHeight;
     SDL_RenderSetLogicalSize(renderer, unscaledWidth, unscaledHeight);
 
-    isRunning = true;
-    ImGui::CreateContext();
-    ImGui::StyleColorsDark();
-    SDL_RenderSetVSync(renderer,1);
+    SDL_RenderSetVSync(renderer, 1);
 
     // Setup Platform/Renderer backends
+    ImGui::CreateContext();
+    ImGui::StyleColorsDark();
     ImGui_ImplSDL2_InitForSDLRenderer(window, renderer);
     ImGui_ImplSDLRenderer_Init(renderer);
+
+    isRunning = true;
 }
 
 void World::ProcessInput()
@@ -155,22 +141,15 @@ void World::Update()
 {
     int timeToWait = MILLISECS_PER_FRAME - (SDL_GetTicks() - millisecsPreviousFrame);
     if (timeToWait > 0 && timeToWait <= MILLISECS_PER_FRAME)
-    {
-        SDL_Delay(5);
-    }
-    // The difference in ticks since the last frame, converted to seconds
+        SDL_Delay(timeToWait);
     double deltaTime = (SDL_GetTicks() - millisecsPreviousFrame) / 1000.0;
     millisecsPreviousFrame = SDL_GetTicks();
     eventBus->Reset();
     SoundSystem::Update();
-    MovementSystem::Update(reg,deltaTime);
+    MovementSystem::Update(reg, deltaTime);
     GravitySystem::Update(reg, deltaTime);
-    // CollisionSystem::Update(reg,deltaTime);
-
-
 }
 
-static int counter = 0;
 void World::Render()
 {
     SDL_SetRenderDrawColor(renderer, 21, 21, 21, 255);
@@ -182,30 +161,9 @@ void World::Render()
         ImGui_ImplSDLRenderer_NewFrame();
         ImGui_ImplSDL2_NewFrame();
         ImGui::NewFrame();
-
-        ImGui::ShowDemoWindow();
-        {
-            static float f = 0.0f;
-
-            ImGui::Begin("Hello, world!"); // Create a window called "Hello, world!" and append into it.
-
-            ImGui::Text("This is some useful text."); // Display some text (you can use a format strings too)
-
-            ImGui::SliderFloat("float", &f, 0.0f, 1.0f); // Edit 1 float using a slider from 0.0f to 1.0f
-
-            if (ImGui::Button("Button")) // Buttons return true when clicked (most widgets return true when edited/activated)
-                counter++;
-            ImGui::SameLine();
-            ImGui::Text("counter = %d", counter);
-
-            ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-            ImGui::End();
-        }
-
         ImGui::Render();
         ImGui_ImplSDLRenderer_RenderDrawData(ImGui::GetDrawData());
     }
-
     SDL_RenderPresent(renderer);
 }
 

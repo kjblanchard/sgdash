@@ -1,10 +1,10 @@
 #pragma once
 
+#include <SDL2/SDL.h>
+#include <sol/sol.hpp>
 #include <entt/entt.hpp>
 #include <events/EventBus.h>
 #include <core/asset_store.hpp>
-#include <SDL2/SDL.h>
-#include <sol/sol.hpp>
 
 const int FPS = 60;
 const int MILLISECS_PER_FRAME = 1000 / FPS;
@@ -13,7 +13,6 @@ class World
 {
 private:
     bool isRunning;
-    bool isDebug;
     int millisecsPreviousFrame = 0;
     SDL_Window *window;
     SDL_Renderer *renderer;
@@ -48,4 +47,5 @@ public:
     static int mapHeight;
     static int screenScaleRatioWidth;
     static int screenScaleRatioHeight;
+    static bool isDebug;
 };

@@ -2,6 +2,7 @@
 #include <systems/draw_system.hpp>
 #include <components/rigid_body_component.hpp>
 #include <components/box_collider_component.hpp>
+#include <core/world.hpp>
 
 void DrawSystem::Update(entt::registry &reg, SDL_Renderer *renderer, std::unique_ptr<AssetStore> &assetStore, SDL_Rect &camera)
 {
@@ -25,9 +26,7 @@ void DrawSystem::Update(entt::registry &reg, SDL_Renderer *renderer, std::unique
                           sprite.flip);
                   });
 
-    //TODO read this from lua
-    bool debug = true;
-    if (debug)
+    if (World::isDebug)
     {
         auto debug_entities = reg.view<BoxColliderComponent, TransformComponent>();
         debug_entities.each([&renderer, &camera, &reg](auto entity, auto &box, auto &transform)
@@ -37,8 +36,8 @@ void DrawSystem::Update(entt::registry &reg, SDL_Renderer *renderer, std::unique
                                 lhs.y = static_cast<int>(transform.position.y + box.offset.y);
                                 lhs.w = static_cast<int>(box.bounding_box.w);
                                 lhs.h = static_cast<int>(box.bounding_box.h);
-                                SDL_SetRenderDrawColor(renderer, 255,0,0,255);
-                                SDL_RenderDrawRect(renderer,&lhs);
+                                SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
+                                SDL_RenderDrawRect(renderer, &lhs);
                             });
     }
 }
