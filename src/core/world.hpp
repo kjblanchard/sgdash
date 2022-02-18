@@ -28,6 +28,7 @@ private:
     const char *unscaledWidthStr = "unscaled_width";
     const char *unscaledHeightStr = "unscaled_height";
 
+
 public:
     World();
     ~World();
@@ -48,4 +49,5 @@ public:
     static int screenScaleRatioWidth;
     static int screenScaleRatioHeight;
     static bool isDebug;
+    static constexpr char *config_file_string = (char*)"cfg.lua";
 };
