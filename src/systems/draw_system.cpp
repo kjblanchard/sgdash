@@ -2,7 +2,11 @@
 #include <systems/draw_system.hpp>
 #include <components/rigid_body_component.hpp>
 #include <components/box_collider_component.hpp>
+#include <components/transform_component.hpp>
+#include <components/sprite_component.hpp>
+#include <core/asset_store.hpp>
 #include <core/world.hpp>
+
 
 void DrawSystem::Update(entt::registry &reg, SDL_Renderer *renderer, std::unique_ptr<AssetStore> &assetStore, SDL_Rect &camera)
 {
