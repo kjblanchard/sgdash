@@ -1,7 +1,12 @@
-#include <fmod/fmod_studio.hpp>
 
 namespace sol {
     class state;
+}
+
+namespace FMOD{
+    namespace Studio{
+        class System;
+    }
 }
 
 

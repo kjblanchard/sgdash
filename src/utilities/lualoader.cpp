@@ -1,4 +1,6 @@
+#include <sol/sol.hpp>
 #include <utilities/lualoader.hpp>
+#include <core/logger.hpp>
 
 sol::table utilities::load_lua_table(sol::state &lua, const std::string &file_location, const std::string &table_name)
 {

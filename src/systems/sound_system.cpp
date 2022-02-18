@@ -3,6 +3,7 @@
 #include <iostream>
 #include <sol/sol.hpp>
 #include <utilities/lualoader.hpp>
+#include <fmod/fmod_studio.hpp>
 
 FMOD::Studio::System *SoundSystem::loaded_system = nullptr;
 
