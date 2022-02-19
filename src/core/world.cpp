@@ -17,6 +17,7 @@
 #include <systems/collision_system.hpp>
 #include <systems/player_controller_system.hpp>
 #include <systems/jump_system.hpp>
+#include <systems/camera_system.hpp>
 
 #include <core/logger.hpp>
 #include <core/levelloader.hpp>
@@ -154,6 +155,7 @@ void World::Update()
     MovementSystem::Update(reg, deltaTime);
     JumpSystem::update(reg);
     GravitySystem::Update(reg, deltaTime);
+    CameraSystem::update(reg,camera);
 }
 
 void World::Render()

@@ -9,6 +9,7 @@ struct RigidBodyComponent
     }
     ~RigidBodyComponent(){};
     glm::vec2 velocity;
+    bool on_ground = false;
     inline void apply_force(glm::vec2 force){
         velocity += force;
     }

@@ -13,8 +13,8 @@ void JumpSystem::update(entt::registry &reg)
                   auto button = PlayerControllerSystem::player_button_lookup(Joystick::Joystick_Buttons::UP);
                   if (PlayerControllerSystem::KeyJustPressed(button))
                   {
-                      std::cout << "Jump system was triggered!" << std::endl;
-                      rb.velocity.y -= jump.jump_vel;
+                      if (rb.on_ground)
+                          rb.velocity.y -= jump.jump_vel;
                   }
               });
 }

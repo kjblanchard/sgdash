@@ -15,7 +15,6 @@ void MovementSystem::Update(entt::registry &reg, const double &delta_time)
                   double x_step = rigid_body.velocity.x * delta_time;
                   double y_step = rigid_body.velocity.y * delta_time;
 
-
                   //Handle the game loading for testing so that you don't move after a load.
                   if (x_step > 10)
                       x_step = 0;
@@ -35,6 +34,7 @@ void MovementSystem::Update(entt::registry &reg, const double &delta_time)
                           //hit the ground
                           rigid_body.velocity.y = 0;
                           y_collision = true;
+                          rigid_body.on_ground = true;
                           //Move transform back as there was a colission
                           --transform.position.y;
                           break;
@@ -53,6 +53,8 @@ void MovementSystem::Update(entt::registry &reg, const double &delta_time)
                           break;
                       }
                       ++y_step;
+                      if (!y_collision)
+                          rigid_body.on_ground = false;
                   }
 
                   //handle X
