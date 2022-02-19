@@ -1,10 +1,7 @@
 #pragma once
 #include <string>
+#include <sol/sol.hpp>
 
-namespace sol
-{
-    class state;
-}
 
 class utilities
 {

@@ -5,6 +5,8 @@
 #include <components/sprite_component.hpp>
 #include <components/rigid_body_component.hpp>
 #include <components/box_collider_component.hpp>
+#include <components/player_controller_component.hpp>
+#include <components/jump_component.hpp>
 #include <fstream>
 #include <string>
 
@@ -118,6 +120,8 @@ void LevelLoader::LoadTiledLevel(sol::state &lua, entt::registry &registry, cons
     player_rect.x = 16;
     player_rect.y = 16;
     registry.emplace<BoxColliderComponent>(player, player_rect, glm::vec2(2,2));
+    registry.emplace<PlayerControllerComponent>(player);
+    registry.emplace<JumpComponent>(player);
 
 
     //Sort the registry so that it is ordered by z for the sprite components.  This should be done whenever something is added.

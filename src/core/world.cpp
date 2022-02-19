@@ -15,6 +15,8 @@
 #include <systems/movement_system.hpp>
 #include <systems/gravity_system.hpp>
 #include <systems/collision_system.hpp>
+#include <systems/player_controller_system.hpp>
+#include <systems/jump_system.hpp>
 
 #include <core/logger.hpp>
 #include <core/levelloader.hpp>
@@ -130,6 +132,7 @@ void World::Setup()
 {
     lua.open_libraries(sol::lib::base, sol::lib::math, sol::lib::os);
 
+    PlayerControllerSystem::setup();
     SoundSystem::Setup();
     GravitySystem::Setup();
 
@@ -146,8 +149,10 @@ void World::Update()
     millisecsPreviousFrame = SDL_GetTicks();
     eventBus->Reset();
     SoundSystem::Update();
+    PlayerControllerSystem::update();
 
     MovementSystem::Update(reg, deltaTime);
+    JumpSystem::update(reg);
     GravitySystem::Update(reg, deltaTime);
 }
 

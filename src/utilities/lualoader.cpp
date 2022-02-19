@@ -1,4 +1,3 @@
-#include <sol/sol.hpp>
 #include <utilities/lualoader.hpp>
 #include <core/logger.hpp>
 

@@ -15,7 +15,6 @@ void MovementSystem::Update(entt::registry &reg, const double &delta_time)
                   double x_step = rigid_body.velocity.x * delta_time;
                   double y_step = rigid_body.velocity.y * delta_time;
 
-                  std::cout << "The rigidbody vel is : " << rigid_body.velocity.x << " and the x step is " << x_step << std::endl;
 
                   //Handle the game loading for testing so that you don't move after a load.
                   if (x_step > 10)

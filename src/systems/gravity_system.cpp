@@ -24,7 +24,6 @@ void GravitySystem::Setup()
     GravitySystem::max_x = lua_gravity_table[lua_friction_max_string];
     GravitySystem::min_y = lua_gravity_table[lua_gravity_min_string];
     GravitySystem::max_y = lua_gravity_table[lua_gravity_max_string];
-    std::cout << "Gravity y min/max: " << GravitySystem::min_y << " : " << GravitySystem::max_y << std::endl;
     GravitySystem::friction = lua_gravity_table[GravitySystem::lua_friction_string];
 }
 
@@ -80,6 +79,5 @@ double GravitySystem::keep_gravity_y_in_range(double vel_y, double gravity)
         step = GravitySystem::max_y;
     if (step < GravitySystem::min_y)
         step = 0;
-    std::cout << step << "Is the step" << std::endl;
     return step;
 }
