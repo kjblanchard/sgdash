@@ -12,5 +12,4 @@ struct RigidBodyComponent
     inline void apply_force(glm::vec2 force){
         velocity += force;
     }
-    static const int max_y_speed = 150;
 };

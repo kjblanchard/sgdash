@@ -12,8 +12,11 @@ public:
 
 private:
     static double keep_gravity_x_in_range(double vel_x, double fric);
+    static double keep_gravity_y_in_range(double vel_y, double gravity);
     static int gravity;
     static double friction;
+    static double min_y;
+    static double max_y;
     static double min_x;
     static double max_x;
 
@@ -22,4 +25,6 @@ private:
     static constexpr char *lua_friction_string = (char *)"friction";
     static constexpr char *lua_friction_min_string = (char *)"min_friction";
     static constexpr char *lua_friction_max_string = (char *)"max_friction";
+    static constexpr char *lua_gravity_min_string = (char *)"min_gravity";
+    static constexpr char *lua_gravity_max_string = (char *)"max_gravity";
 };

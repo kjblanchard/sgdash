@@ -12,6 +12,8 @@ int GravitySystem::gravity = 0;
 double GravitySystem::friction = 0;
 double GravitySystem::min_x = 0;
 double GravitySystem::max_x = 0;
+double GravitySystem::min_y = 0;
+double GravitySystem::max_y = 0;
 
 void GravitySystem::Setup()
 {
@@ -20,6 +22,9 @@ void GravitySystem::Setup()
     GravitySystem::gravity = lua_gravity_table[GravitySystem::lua_gravity_string];
     GravitySystem::min_x = lua_gravity_table[lua_friction_min_string];
     GravitySystem::max_x = lua_gravity_table[lua_friction_max_string];
+    GravitySystem::min_y = lua_gravity_table[lua_gravity_min_string];
+    GravitySystem::max_y = lua_gravity_table[lua_gravity_max_string];
+    std::cout << "Gravity y min/max: " << GravitySystem::min_y << " : " << GravitySystem::max_y << std::endl;
     GravitySystem::friction = lua_gravity_table[GravitySystem::lua_friction_string];
 }
 
@@ -38,7 +43,8 @@ void GravitySystem::Update(entt::registry &reg, double &delta_time)
     view.each([&delta_time, &gravity_step, &friction_step](auto entity, auto &rigid_body)
               {
                   rigid_body.velocity.x = GravitySystem::keep_gravity_x_in_range(rigid_body.velocity.x, friction_step);
-                  rigid_body.velocity.y = (rigid_body.velocity.y + gravity_step > RigidBodyComponent::max_y_speed) ? RigidBodyComponent::max_y_speed : gravity_step + rigid_body.velocity.y;
+                  rigid_body.velocity.y = GravitySystem::keep_gravity_y_in_range(rigid_body.velocity.y, gravity_step);
+                    // rigid_body.velocity.y = (rigid_body.velocity.y + gravity_step > max_y) ? max_y : gravity_step + rigid_body.velocity.y;
               });
 }
 
@@ -65,4 +71,15 @@ double GravitySystem::keep_gravity_x_in_range(double vel_x, double fric)
             step = 0;
         return step;
     }
+}
+double GravitySystem::keep_gravity_y_in_range(double vel_y, double gravity)
+{
+
+    auto step = vel_y + gravity;
+    if (step > GravitySystem::max_y)
+        step = GravitySystem::max_y;
+    if (step < GravitySystem::min_y)
+        step = 0;
+    std::cout << step << "Is the step" << std::endl;
+    return step;
 }

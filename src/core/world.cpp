@@ -130,7 +130,7 @@ void World::Setup()
 {
     lua.open_libraries(sol::lib::base, sol::lib::math, sol::lib::os);
 
-    SoundSystem::Setup(lua);
+    SoundSystem::Setup();
     GravitySystem::Setup();
 
     auto levelloader = LevelLoader();
@@ -141,7 +141,7 @@ void World::Update()
 {
     int timeToWait = MILLISECS_PER_FRAME - (SDL_GetTicks() - millisecsPreviousFrame);
     if (timeToWait > 0 && timeToWait <= MILLISECS_PER_FRAME)
-        SDL_Delay(timeToWait);
+        SDL_Delay(5);
     double deltaTime = (SDL_GetTicks() - millisecsPreviousFrame) / 1000.0;
     millisecsPreviousFrame = SDL_GetTicks();
     eventBus->Reset();

@@ -111,7 +111,7 @@ void LevelLoader::LoadTiledLevel(sol::state &lua, entt::registry &registry, cons
 
     registry.emplace<TransformComponent>(player, glm::vec2(40, 40), glm::vec2(1.0, 1.0), 0);
     registry.emplace<SpriteComponent>(player, tilesetName, tileWidth, tileHeight, 5, false, 0, 64);
-    registry.emplace<RigidBodyComponent>(player, glm::vec2(80,-20));
+    registry.emplace<RigidBodyComponent>(player, glm::vec2(150,-30));
     SDL_Rect player_rect;
     player_rect.h = 12;
     player_rect.w = 12;

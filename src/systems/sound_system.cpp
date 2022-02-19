@@ -8,7 +8,7 @@
 FMOD::Studio::System *SoundSystem::loaded_system = nullptr;
 
 FMOD::Studio::System *
-SoundSystem::Setup(sol::state &lua)
+SoundSystem::Setup()
 {
     FMOD::Studio::System *system = nullptr;
     auto result = FMOD::Studio::System::create(&system);
@@ -25,6 +25,8 @@ SoundSystem::Setup(sol::state &lua)
     FMOD::Studio::EventInstance *loadedEventInstance = nullptr;
     result = loadedEventDescription->createInstance(&loadedEventInstance);
     result = loadedEventInstance->start();
+
+    sol::state lua;
 
     auto sound_table = utilities::load_lua_table(lua,"cfg.lua", "sound_config");
     double loaded_volume = sound_table["volume"];
