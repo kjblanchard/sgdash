@@ -17,7 +17,7 @@ void MovementSystem::Update(entt::registry &reg, const double &delta_time)
                   double x_step = rigid_body.velocity.x * delta_time;
                   double y_step = rigid_body.velocity.y * delta_time;
                   //TODO remove this and the death parts in here.
-                  auto& sprite = reg.get<SpriteComponent>(entity);
+                  auto &sprite = reg.get<SpriteComponent>(entity);
 
                   //Handle the game loading for testing so that you don't move after a load.
                   if (x_step > 10)
@@ -62,15 +62,20 @@ void MovementSystem::Update(entt::registry &reg, const double &delta_time)
                   }
 
                   //handle X
-                  while (!x_collision && x_step > 1)
+                  while (!x_collision && x_step > 0)
                   {
+                      std::cout << "hello" << std::endl;
+                      auto move_amount = (x_step >=1) ? 1 : x_step;
                       ++transform.position.x;
-                      if (CollisionSystem::check_collision_with_walls(reg, entity, box, transform))
+                      transform.position.x += move_amount;
+                      std::cout << "My x pos is " << transform.position.x << std::endl;
+                      if (CollisionSystem::check_collision_with_walls_x(reg, entity, box, transform))
                       {
                           Logger::Err("There would be a Collision in X");
                           rigid_body.velocity.x = 0;
                           x_collision = true;
-                          --transform.position.x;
+                        //   -transform.position.x;
+                          transform.position.x -= move_amount;
                           //Handle death.
                           SoundSystem::stop_music_with_fadeout();
                           SoundSystem::play_sfx_oneshot();
@@ -81,10 +86,10 @@ void MovementSystem::Update(entt::registry &reg, const double &delta_time)
                       }
                       --x_step;
                   }
-                  while (!x_collision && x_step < -1)
+                  while (!x_collision && x_step < 0)
                   {
                       --transform.position.x;
-                      if (CollisionSystem::check_collision_with_walls(reg, entity, box, transform))
+                      if (CollisionSystem::check_collision_with_walls_x(reg, entity, box, transform))
                       {
                           Logger::Err("There would be a Collision in X");
                           rigid_body.velocity.x = 0;
@@ -102,7 +107,7 @@ void MovementSystem::Update(entt::registry &reg, const double &delta_time)
                   }
                   CollisionSystem::check_collision_with_actors(reg, entity, box, transform);
 
-                  if (!x_collision && x_step > 0 && x_step < 1)
-                      transform.position.x += x_step;
+                //   if (!x_collision && x_step > 0 && x_step < 1)
+                //       transform.position.x += x_step;
               });
 }

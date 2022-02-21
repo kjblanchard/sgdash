@@ -46,6 +46,6 @@ add_custom_command(
                 ${CMAKE_SOURCE_DIR}/assets
                 ${CMAKE_CURRENT_BINARY_DIR}/assets)
 
-# set(CMAKE_BUILD_TYPE Debug)
-SET(CMAKE_CXX_FLAGS "-O0")
-set(CMAKE_BUILD_TYPE Release)
+set(CMAKE_BUILD_TYPE Debug)
+# SET(CMAKE_CXX_FLAGS "-O0")
+# set(CMAKE_BUILD_TYPE Release)

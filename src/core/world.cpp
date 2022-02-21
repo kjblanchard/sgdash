@@ -20,7 +20,6 @@
 #include <systems/camera_system.hpp>
 #include <systems/damage_system.hpp>
 
-
 #include <core/logger.hpp>
 #include <core/levelloader.hpp>
 #include <utilities/lualoader.hpp>
@@ -64,11 +63,18 @@ void World::Initialize()
 
     auto debug_config = utilities::load_lua_table(tempLua, "cfg.lua", "debug_config");
     World::isDebug = debug_config["all"];
+    // window = SDL_CreateWindow(
+    //     NULL,
+    //     SDL_WINDOWPOS_CENTERED,
+    //     SDL_WINDOWPOS_CENTERED,
+    //     windowWidth,
+    //     windowHeight,
+    //     SDL_WINDOW_BORDERLESS);
 
     window = SDL_CreateWindow(
         NULL,
-        SDL_WINDOWPOS_CENTERED,
-        SDL_WINDOWPOS_CENTERED,
+        0,
+        0,
         windowWidth,
         windowHeight,
         SDL_WINDOW_BORDERLESS);
@@ -158,7 +164,7 @@ void World::Update()
     MovementSystem::Update(reg, deltaTime);
     JumpSystem::update(reg);
     GravitySystem::Update(reg, deltaTime);
-    CameraSystem::update(reg,camera);
+    CameraSystem::update(reg, camera);
 }
 
 void World::Render()
