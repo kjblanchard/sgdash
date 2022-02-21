@@ -39,12 +39,18 @@ void MovementSystem::Update(entt::registry &reg, const double &delta_time)
                           rigid_body.velocity.y = 0;
                           y_collision = true;
                           rigid_body.on_ground = true;
+                          transform.rotation = 0;
                           //Move transform back as there was a colission
                           --transform.position.y;
                           break;
                       }
                       //Else subtract from y step
                       --y_step;
+                      if (!y_collision)
+                      {
+                          rigid_body.on_ground = false;
+                          transform.rotation += 5;
+                      }
                   }
                   while (!y_collision && y_step < -1)
                   {
@@ -53,29 +59,32 @@ void MovementSystem::Update(entt::registry &reg, const double &delta_time)
                       {
                           rigid_body.velocity.y = 0;
                           y_collision = true;
+                          rigid_body.on_ground = true;
+                          transform.rotation = 0;
                           ++transform.position.y;
                           break;
                       }
                       ++y_step;
                       if (!y_collision)
+                      {
                           rigid_body.on_ground = false;
+                          transform.rotation += 5;
+                      }
                   }
 
                   //handle X
                   while (!x_collision && x_step > 0)
                   {
                       //TODO copy this to the others when doing refactoring to make sure that it works properly for x < 1 steps
-                      std::cout << "hello" << std::endl;
-                      auto move_amount = (x_step >=1) ? 1 : x_step;
+                      auto move_amount = (x_step >= 1) ? 1 : x_step;
                       ++transform.position.x;
                       transform.position.x += move_amount;
-                      std::cout << "My x pos is " << transform.position.x << std::endl;
                       if (CollisionSystem::check_collision_with_walls_x(reg, entity, box, transform))
                       {
                           Logger::Err("There would be a Collision in X");
                           rigid_body.velocity.x = 0;
                           x_collision = true;
-                        //   -transform.position.x;
+                          //   -transform.position.x;
                           transform.position.x -= move_amount;
                           //Handle death.
                           SoundSystem::stop_music_with_fadeout();
@@ -108,7 +117,7 @@ void MovementSystem::Update(entt::registry &reg, const double &delta_time)
                   }
                   CollisionSystem::check_collision_with_actors(reg, entity, box, transform);
 
-                //   if (!x_collision && x_step > 0 && x_step < 1)
-                //       transform.position.x += x_step;
+                  //   if (!x_collision && x_step > 0 && x_step < 1)
+                  //       transform.position.x += x_step;
               });
 }

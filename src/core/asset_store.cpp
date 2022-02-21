@@ -2,30 +2,38 @@
 #include <core/logger.hpp>
 #include <SDL2/SDL_image.h>
 
-AssetStore::AssetStore() {
+AssetStore::AssetStore()
+{
     Logger::Log("AssetStore constructor called!");
 }
 
-AssetStore::~AssetStore() {
+AssetStore::~AssetStore()
+{
     ClearAssets();
     Logger::Log("AssetStore destructor called!");
 }
 
-void AssetStore::ClearAssets() {
-    for (auto texture: textures) {
+void AssetStore::ClearAssets()
+{
+    for (auto texture : textures)
+    {
         SDL_DestroyTexture(texture.second);
     }
     textures.clear();
 
-    for (auto font: fonts) {
+    for (auto font : fonts)
+    {
         TTF_CloseFont(font.second);
     }
     fonts.clear();
 }
 
-void AssetStore::AddTexture(SDL_Renderer* renderer, const std::string& assetId, const std::string& filePath) {
-    SDL_Surface* surface = IMG_Load(filePath.c_str());
-    SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
+void AssetStore::AddTexture(SDL_Renderer *renderer, const std::string &assetId, const std::string &filePath)
+{
+    if (textures.find(assetId) != textures.end())
+        return;
+    SDL_Surface *surface = IMG_Load(filePath.c_str());
+    SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, surface);
     SDL_FreeSurface(surface);
 
     // Add the texture to the map
@@ -34,24 +42,27 @@ void AssetStore::AddTexture(SDL_Renderer* renderer, const std::string& assetId, 
     Logger::Log("Texture added to the AssetStore with id " + assetId);
 }
 
-SDL_Texture* AssetStore::GetTexture(const std::string& assetId) {
+SDL_Texture *AssetStore::GetTexture(const std::string &assetId)
+{
 
     auto it = textures.find(assetId);
-    if(it != textures.end())
+    if (it != textures.end())
     {
         return it->second;
-
     }
-    else{
+    else
+    {
         Logger::Err("Couldn't find the loaded image for " + assetId);
         return nullptr;
     }
 }
 
-void AssetStore::AddFont(const std::string& assetId, const std::string& filePath, int fontSize) {
+void AssetStore::AddFont(const std::string &assetId, const std::string &filePath, int fontSize)
+{
     fonts.emplace(assetId, TTF_OpenFont(filePath.c_str(), fontSize));
 }
 
-TTF_Font* AssetStore::GetFont(const std::string& assetId) {
+TTF_Font *AssetStore::GetFont(const std::string &assetId)
+{
     return fonts[assetId];
 }

@@ -17,6 +17,13 @@ void SoundSystem::play_sfx_oneshot()
     event->createInstance(&loaded_event);
     loaded_event->start();
 }
+void SoundSystem::restart()
+{
+    auto result = current_music->stop(FMOD_STUDIO_STOP_IMMEDIATE);
+    std::cout << result << std::endl;
+    result = current_music->start();
+    std::cout << result << std::endl;
+}
 
 FMOD::Studio::System *
 SoundSystem::Setup()

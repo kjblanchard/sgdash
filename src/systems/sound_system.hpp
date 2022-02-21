@@ -23,5 +23,6 @@ public:
     static void play_sfx_oneshot();
     static void Update();
     static void stop_music_with_fadeout();
+    static void restart();
 
 };

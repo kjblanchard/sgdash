@@ -15,12 +15,12 @@ private:
     bool isRunning;
     int millisecsPreviousFrame = 0;
     SDL_Window *window;
-    SDL_Renderer *renderer;
+    // SDL_Renderer *renderer;
     SDL_Rect camera;
 
     sol::state lua;
-    entt::registry reg;
-    std::unique_ptr<AssetStore> assetStore;
+    // entt::registry reg;
+    // std::unique_ptr<AssetStore> assetStore;
     std::unique_ptr<EventBus> eventBus;
 
     const char *windowWidthStr = "window_width";
@@ -39,6 +39,8 @@ public:
     void Update();
     void Render();
     void Destroy();
+    static SDL_Renderer *renderer;
+    static std::unique_ptr<AssetStore> assetStore;
 
     static int windowWidth;
     static int windowHeight;

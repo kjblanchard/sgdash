@@ -20,8 +20,9 @@
 #include <systems/camera_system.hpp>
 #include <systems/damage_system.hpp>
 
+#include <core/level.hpp>
 #include <core/logger.hpp>
-#include <core/levelloader.hpp>
+// #include <core/levelloader.hpp>
 #include <utilities/lualoader.hpp>
 
 int World::windowWidth;
@@ -33,9 +34,12 @@ int World::unscaledWidth;
 int World::screenScaleRatioHeight;
 int World::screenScaleRatioWidth;
 bool World::isDebug = false;
+SDL_Renderer *World::renderer;
+std::unique_ptr<AssetStore> World::assetStore;
 
-World::World() : isRunning{false}, assetStore{std::make_unique<AssetStore>()}, eventBus{std::make_unique<EventBus>()}
+World::World() : isRunning{false}, eventBus{std::make_unique<EventBus>()}
 {
+    assetStore = std::make_unique<AssetStore>();
 }
 
 World::~World()
@@ -63,13 +67,6 @@ void World::Initialize()
 
     auto debug_config = utilities::load_lua_table(tempLua, "cfg.lua", "debug_config");
     World::isDebug = debug_config["all"];
-    // window = SDL_CreateWindow(
-    //     NULL,
-    //     SDL_WINDOWPOS_CENTERED,
-    //     SDL_WINDOWPOS_CENTERED,
-    //     windowWidth,
-    //     windowHeight,
-    //     SDL_WINDOW_BORDERLESS);
 
     window = SDL_CreateWindow(
         NULL,
@@ -77,7 +74,7 @@ void World::Initialize()
         0,
         windowWidth,
         windowHeight,
-        SDL_WINDOW_BORDERLESS);
+        SDL_WINDOW_OPENGL);
     if (!window)
         throw std::runtime_error(SDL_GetError());
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
@@ -131,6 +128,12 @@ void World::ProcessInput()
             {
                 isDebug = !isDebug;
             }
+            if (sdlEvent.key.keysym.sym == SDLK_k)
+            {
+                Level::restart();
+                SoundSystem::restart();
+                camera.x = camera.y = 0;
+            }
             // eventBus->EmitEvent<KeyPressedEvent>(sdlEvent.key.keysym.sym);
             break;
         }
@@ -146,8 +149,9 @@ void World::Setup()
     GravitySystem::Setup();
     DamageSystem::setup();
 
-    auto levelloader = LevelLoader();
-    levelloader.LoadTiledLevel(lua, reg, assetStore, renderer, 1);
+    // auto levelloader = LevelLoader();
+    // levelloader.LoadTiledLevel(lua, reg, assetStore, renderer, 1);
+    Level::load_level();
 }
 
 void World::Update()
@@ -161,10 +165,14 @@ void World::Update()
     SoundSystem::Update();
     PlayerControllerSystem::update();
 
-    MovementSystem::Update(reg, deltaTime);
-    JumpSystem::update(reg);
-    GravitySystem::Update(reg, deltaTime);
-    CameraSystem::update(reg, camera);
+    // MovementSystem::Update(reg, deltaTime);
+    // JumpSystem::update(reg);
+    // GravitySystem::Update(reg, deltaTime);
+    // CameraSystem::update(reg, camera);
+    MovementSystem::Update(Level::level_registry, deltaTime);
+    JumpSystem::update(Level::level_registry);
+    GravitySystem::Update(Level::level_registry, deltaTime);
+    CameraSystem::update(Level::level_registry, camera);
 }
 
 void World::Render()
@@ -172,7 +180,7 @@ void World::Render()
     SDL_SetRenderDrawColor(renderer, 21, 21, 21, 255);
     SDL_RenderClear(renderer);
 
-    DrawSystem::Update(reg, renderer, assetStore, camera);
+    DrawSystem::Update(Level::level_registry, renderer, assetStore, camera);
     if (isDebug)
     {
         ImGui_ImplSDLRenderer_NewFrame();
