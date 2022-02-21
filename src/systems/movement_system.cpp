@@ -64,6 +64,7 @@ void MovementSystem::Update(entt::registry &reg, const double &delta_time)
                   //handle X
                   while (!x_collision && x_step > 0)
                   {
+                      //TODO copy this to the others when doing refactoring to make sure that it works properly for x < 1 steps
                       std::cout << "hello" << std::endl;
                       auto move_amount = (x_step >=1) ? 1 : x_step;
                       ++transform.position.x;
