@@ -5,5 +5,5 @@ struct JumpComponent
     {
     }
     ~JumpComponent() {}
-    int jump_vel = 6000;
+    int jump_vel = 275;
 };

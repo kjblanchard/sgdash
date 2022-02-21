@@ -1,5 +1,6 @@
 #include <core/levelloader.hpp>
 #include <core/world.hpp>
+#include <primitives/actor_list.hpp>
 #include <utilities/lualoader.hpp>
 #include <components/transform_component.hpp>
 #include <components/sprite_component.hpp>
@@ -8,6 +9,9 @@
 #include <components/player_controller_component.hpp>
 #include <components/jump_component.hpp>
 #include <components/camera_follow_component.hpp>
+#include <components/wall_component.hpp>
+#include <components/actor_component.hpp>
+#include <components/damage_component.hpp>
 #include <fstream>
 #include <string>
 
@@ -103,6 +107,7 @@ void LevelLoader::LoadTiledLevel(sol::state &lua, entt::registry &registry, cons
                 rect.w = tileWidth;
                 rect.h = tileHeight;
                 registry.emplace<BoxColliderComponent>(tile, rect);
+                registry.emplace<WallComponent>(tile);
             }
             registry.emplace<TransformComponent>(tile, glm::vec2(x, y), glm::vec2(1.0, 1.0), 0.0);
 
@@ -112,19 +117,33 @@ void LevelLoader::LoadTiledLevel(sol::state &lua, entt::registry &registry, cons
     }
     const auto player = registry.create();
 
+    //setup player
     registry.emplace<TransformComponent>(player, glm::vec2(40, 40), glm::vec2(1.0, 1.0), 0);
     registry.emplace<SpriteComponent>(player, tilesetName, tileWidth, tileHeight, 5, 0, 64);
-    registry.emplace<RigidBodyComponent>(player, glm::vec2(150,-30));
+    registry.emplace<RigidBodyComponent>(player, glm::vec2(100, -30));
     SDL_Rect player_rect;
     player_rect.h = 12;
     player_rect.w = 12;
     player_rect.x = 16;
     player_rect.y = 16;
-    registry.emplace<BoxColliderComponent>(player, player_rect, glm::vec2(2,2));
+    registry.emplace<BoxColliderComponent>(player, player_rect, glm::vec2(2, 2));
     registry.emplace<PlayerControllerComponent>(player);
     registry.emplace<JumpComponent>(player);
     registry.emplace<CameraFollowComponent>(player);
+    registry.emplace<ActorComponent>(player, COLLISION_LIST::PLAYER);
 
+    //setup damage coin
+    const auto damage_coin = registry.create();
+    SDL_Rect coin_rect;
+    coin_rect.h = 16;
+    coin_rect.w = 16;
+    coin_rect.x = 0;
+    coin_rect.y = 0;
+    registry.emplace<SpriteComponent>(damage_coin, tilesetName, tileWidth, tileHeight, 5,16,128);
+    registry.emplace<TransformComponent>(damage_coin, glm::vec2(200, 110), glm::vec2(1.0, 1.0), 0);
+    registry.emplace<BoxColliderComponent>(damage_coin, coin_rect, glm::vec2(0, 0));
+    registry.emplace<ActorComponent>(damage_coin, COLLISION_LIST::DAMAGE);
+    registry.emplace<DamageComponent>(damage_coin);
 
     //Sort the registry so that it is ordered by z for the sprite components.  This should be done whenever something is added.
     registry.sort<SpriteComponent>([](const auto &lhs, const auto &rhs)

@@ -6,6 +6,7 @@
 
 struct SpriteComponent {
     std::string assetId;
+    bool enabled = true;
     int width;
     int height;
     int zIndex;

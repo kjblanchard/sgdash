@@ -18,6 +18,8 @@
 #include <systems/player_controller_system.hpp>
 #include <systems/jump_system.hpp>
 #include <systems/camera_system.hpp>
+#include <systems/damage_system.hpp>
+
 
 #include <core/logger.hpp>
 #include <core/levelloader.hpp>
@@ -136,6 +138,7 @@ void World::Setup()
     PlayerControllerSystem::setup();
     SoundSystem::Setup();
     GravitySystem::Setup();
+    DamageSystem::setup();
 
     auto levelloader = LevelLoader();
     levelloader.LoadTiledLevel(lua, reg, assetStore, renderer, 1);
