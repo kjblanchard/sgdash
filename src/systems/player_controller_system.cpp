@@ -48,16 +48,15 @@ void PlayerControllerSystem::create_player_key_mappings()
     auto up_button_joystick_key = Joystick::get_button_from_lua_string(Joystick::UP_STRING);
     auto up_button_sdl_key = Joystick::get_sdl_key_from_string(loaded_lua_controller_table[Joystick::UP_STRING]);
     player_button_mapping[up_button_joystick_key] = up_button_sdl_key;
-    // player_map.insert(std::pair<Joystick::Joystick_Buttons, SDL_Scancode>(up_button_joystick_key, up_button_sdl_key));
-    // player_map.insert(up_button_joystick_key,up_button_sdl_key);
+
+    auto confirm_button_key = Joystick::get_button_from_lua_string(Joystick::CONFIRM_STRING);
+    auto confirm_button_sdl_key = Joystick::get_sdl_key_from_string(loaded_lua_controller_table[Joystick::CONFIRM_STRING]);
+    player_button_mapping[confirm_button_key] = confirm_button_sdl_key;
 }
 
 void PlayerControllerSystem::update()
 {
     update_keyboard_states();
-    auto button = player_button_lookup(Joystick::Joystick_Buttons::UP);
-    if (KeyJustPressed(button))
-        std::cout << "Button was just pressed!!" << std::endl;
 }
 SDL_Scancode PlayerControllerSystem::player_button_lookup(Joystick::Joystick_Buttons button)
 {

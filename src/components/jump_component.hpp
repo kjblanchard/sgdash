@@ -5,5 +5,6 @@ struct JumpComponent
     {
     }
     ~JumpComponent() {}
-    int jump_vel = 275;
+    int jump_vel = 200;
+    bool is_currently_jumping = false;
 };

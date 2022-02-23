@@ -43,7 +43,6 @@ void GravitySystem::Update(entt::registry &reg, double &delta_time)
               {
                   rigid_body.velocity.x = GravitySystem::keep_gravity_x_in_range(rigid_body.velocity.x, friction_step);
                   rigid_body.velocity.y = GravitySystem::keep_gravity_y_in_range(rigid_body.velocity.y, gravity_step);
-                  // rigid_body.velocity.y = (rigid_body.velocity.y + gravity_step > max_y) ? max_y : gravity_step + rigid_body.velocity.y;
               });
 }
 

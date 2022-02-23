@@ -26,50 +26,11 @@ void MovementSystem::Update(entt::registry &reg, const double &delta_time)
                       y_step = 0;
 
                   bool x_collision = false;
-                  bool y_collision = false;
 
                   //handle y movement
-                  while (!y_collision && y_step > 1)
+                  if (y_step != 0)
                   {
-                      //Add to y to test if the next movement will collide
-                      ++transform.position.y;
-                      if (CollisionSystem::check_collision_with_walls(reg, entity, box, transform))
-                      {
-                          //hit the ground
-                          rigid_body.velocity.y = 0;
-                          y_collision = true;
-                          rigid_body.on_ground = true;
-                          transform.rotation = 0;
-                          //Move transform back as there was a colission
-                          --transform.position.y;
-                          break;
-                      }
-                      //Else subtract from y step
-                      --y_step;
-                      if (!y_collision)
-                      {
-                          rigid_body.on_ground = false;
-                          transform.rotation += 5;
-                      }
-                  }
-                  while (!y_collision && y_step < -1)
-                  {
-                      --transform.position.y;
-                      if (CollisionSystem::check_collision_with_walls(reg, entity, box, transform))
-                      {
-                          rigid_body.velocity.y = 0;
-                          y_collision = true;
-                          rigid_body.on_ground = true;
-                          transform.rotation = 0;
-                          ++transform.position.y;
-                          break;
-                      }
-                      ++y_step;
-                      if (!y_collision)
-                      {
-                          rigid_body.on_ground = false;
-                          transform.rotation += 5;
-                      }
+                      handle_y_movement(y_step, reg, entity, transform, rigid_body, box);
                   }
 
                   //handle X
@@ -117,7 +78,55 @@ void MovementSystem::Update(entt::registry &reg, const double &delta_time)
                   }
                   CollisionSystem::check_collision_with_actors(reg, entity, box, transform);
 
-                  //   if (!x_collision && x_step > 0 && x_step < 1)
-                  //       transform.position.x += x_step;
+                  std::cout << "The current y value (greater than or = 0 is: " << rigid_body.velocity.y << " and the onground status is " << rigid_body.on_ground << std::endl;
               });
+}
+void MovementSystem::handle_y_movement(double y_step, entt::registry &reg, entt::entity &entity, TransformComponent &transform, RigidBodyComponent &rigid_body, BoxColliderComponent &box)
+{
+    bool y_collision = false;
+    if (y_step > 0)
+    {
+        while (!y_collision && y_step > 0)
+        {
+            //falling down logic
+            //I think the logic that's happening is that when it first hits the ground, the step is potentially large, and breaks out, then the next iteration it's smaller so it moves closer down, and there is no collision until it hits the ground.
+
+            auto move_amount = (y_step >= 1) ? 1 : y_step;
+            auto desired_x = transform.position.x;
+            auto desired_y = transform.position.y + move_amount;
+            auto desired_position = glm::vec2{desired_x, desired_y};
+            if (CollisionSystem::check_collision_with_walls(reg, entity, box, desired_position))
+            {
+                auto y_coord_intersect = static_cast<int>(desired_y);
+                //reduce the integer but be very close
+                transform.position.y = y_coord_intersect - 0.0001;
+                std::cout << "Desired Y is " << desired_y << " and actual Y is " << transform.position.y << std::endl;
+                y_collision = true;
+                rigid_body.velocity.y = 0;
+                rigid_body.on_ground = true;
+                return;
+            }
+            transform.position.y = desired_position.y;
+            y_step -= move_amount;
+        }
+        rigid_body.on_ground = false;
+    }
+    else
+    {
+        while (!y_collision && y_step < 0)
+        {
+            auto move_amount = (y_step <= 1) ? -1 : y_step;
+            auto desired_position = glm::vec2{transform.position.x, transform.position.y += move_amount};
+            if (CollisionSystem::check_collision_with_walls(reg, entity, box, desired_position))
+            {
+                y_collision = true;
+                transform.rotation = 0;
+                rigid_body.velocity.y = 0;
+                rigid_body.on_ground = true;
+                break;
+            }
+            y_step -= move_amount;
+        }
+        rigid_body.on_ground = false;
+    }
 }

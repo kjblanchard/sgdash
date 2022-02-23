@@ -5,6 +5,7 @@
 #include <map>
 #include <functional>
 #include <iostream>
+#include <glm/glm.hpp>
 
 class TransformComponent;
 class BoxColliderComponent;
@@ -12,7 +13,7 @@ class BoxColliderComponent;
 class CollisionSystem
 {
 public:
-    static bool check_collision_with_walls(entt::registry &reg, entt::entity &ent, BoxColliderComponent &box_collider, TransformComponent &transform);
+    static bool check_collision_with_walls(entt::registry &reg, entt::entity &ent, BoxColliderComponent &box_collider, glm::vec2 desired_pos);
     static bool check_collision_with_walls_x(entt::registry &reg, entt::entity &ent, BoxColliderComponent &box_collider, TransformComponent &transform);
     static bool check_collision_with_actors(entt::registry &reg, entt::entity &ent, BoxColliderComponent &box_collider, TransformComponent &transform);
     static std::map<std::pair<int, int>, void (*)(entt::registry &reg, const entt::entity&, const entt::entity&)> collision_type_to_func_map;
@@ -27,4 +28,5 @@ public:
         SDL_IntersectRect(&lhs, &rhs, &overlap);
         return overlap;
     }
+
 };

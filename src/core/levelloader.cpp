@@ -123,10 +123,10 @@ void LevelLoader::LoadTiledLevel(sol::state &lua, entt::registry &registry, cons
     registry.emplace<RigidBodyComponent>(player, glm::vec2(100, -30));
     SDL_Rect player_rect;
     player_rect.h = 12;
-    player_rect.w = 12;
+    player_rect.w = 10;
     player_rect.x = 16;
     player_rect.y = 16;
-    registry.emplace<BoxColliderComponent>(player, player_rect, glm::vec2(2, 2));
+    registry.emplace<BoxColliderComponent>(player, player_rect, glm::vec2(3, 2));
     registry.emplace<PlayerControllerComponent>(player);
     registry.emplace<JumpComponent>(player);
     registry.emplace<CameraFollowComponent>(player);

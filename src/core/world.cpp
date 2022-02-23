@@ -161,17 +161,12 @@ void World::Update()
         SDL_Delay(5);
     double deltaTime = (SDL_GetTicks() - millisecsPreviousFrame) / 1000.0;
     millisecsPreviousFrame = SDL_GetTicks();
-    eventBus->Reset();
     SoundSystem::Update();
     PlayerControllerSystem::update();
 
-    // MovementSystem::Update(reg, deltaTime);
-    // JumpSystem::update(reg);
-    // GravitySystem::Update(reg, deltaTime);
-    // CameraSystem::update(reg, camera);
+    GravitySystem::Update(Level::level_registry, deltaTime);
     MovementSystem::Update(Level::level_registry, deltaTime);
     JumpSystem::update(Level::level_registry);
-    GravitySystem::Update(Level::level_registry, deltaTime);
     CameraSystem::update(Level::level_registry, camera);
 }
 

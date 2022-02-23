@@ -21,6 +21,8 @@ public:
     {
         if (lua_joystick_string == UP_STRING)
             return Joystick_Buttons::UP;
+        else if (lua_joystick_string == CONFIRM_STRING)
+            return Joystick_Buttons::CONFIRM;
         else
             return Joystick_Buttons::DEFAULT;
     }
@@ -29,6 +31,8 @@ public:
     {
         if (lua_joystick_string == "w")
             return SDL_SCANCODE_W;
+        else if (lua_joystick_string == "space")
+            return SDL_SCANCODE_SPACE;
     }
 
     static constexpr char *UP_STRING = (char *)"u";

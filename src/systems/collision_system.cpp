@@ -9,12 +9,12 @@
 
 std::map<std::pair<int, int>, void (*)(entt::registry &, const entt::entity &, const entt::entity &)> CollisionSystem::collision_type_to_func_map;
 
-bool CollisionSystem::check_collision_with_walls(entt::registry &reg, entt::entity &ent, BoxColliderComponent &box_collider, TransformComponent &transform)
+bool CollisionSystem::check_collision_with_walls(entt::registry &reg, entt::entity &ent, BoxColliderComponent &box_collider, glm::vec2 desired_transform)
 {
     auto view = reg.view<BoxColliderComponent, TransformComponent, WallComponent>();
     SDL_Rect lhs;
-    lhs.x = transform.position.x + box_collider.offset.x;
-    lhs.y = transform.position.y + box_collider.offset.y;
+    lhs.x = static_cast<int>(desired_transform.x + box_collider.offset.x);
+    lhs.y = static_cast<int>(desired_transform.y + box_collider.offset.y);
     lhs.w = box_collider.bounding_box.w;
     lhs.h = box_collider.bounding_box.h;
 
@@ -25,12 +25,14 @@ bool CollisionSystem::check_collision_with_walls(entt::registry &reg, entt::enti
         if (ent != *current)
         {
             SDL_Rect rhs;
-            rhs.x = current_transform.position.x;
-            rhs.y = current_transform.position.y;
+            rhs.x = static_cast<int>(current_transform.position.x);
+            rhs.y = static_cast<int>(current_transform.position.y);
             rhs.w = current_box.bounding_box.w;
             rhs.h = current_box.bounding_box.h;
             if (aabb_collision_check(lhs, rhs))
+            {
                 return true;
+            }
         }
     }
     return false;
